@@ -1,0 +1,944 @@
+
+<style>
+  :root {
+    --ma-green: #2D6A4F;
+    --ma-green-light: #EAF4EE;
+    --ma-green-mid: #52946A;
+    --ma-gold: #B5873A;
+    --ma-gold-light: #FDF6EC;
+    --ma-cream: #FDFAF5;
+    --ma-text: #1A1A1A;
+    --ma-muted: #5A5A5A;
+    --ma-border: rgba(0,0,0,0.1);
+    --ma-white: #ffffff;
+    --radius: 10px;
+    --font: 'Georgia', serif;
+    --font-sans: 'Arial', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, #app { font-family: var(--font-sans); background: var(--ma-cream); color: var(--ma-text); }
+
+  #app { max-width: 100%; overflow-x: hidden; }
+
+  /* NAV */
+  .nav { background: var(--ma-green); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; }
+  .nav-logo-icon { width: 36px; height: 36px; background: var(--ma-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .nav-logo-text { color: #fff; font-family: var(--font); font-size: 18px; font-weight: bold; line-height: 1.1; }
+  .nav-logo-sub { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.7); font-family: var(--font-sans); font-weight: normal; }
+  .nav-links { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+  .nav-link { color: rgba(255,255,255,0.85); font-size: 12px; padding: 6px 10px; cursor: pointer; border-radius: 6px; transition: background 0.2s; white-space: nowrap; }
+  .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; }
+  .nav-wa { background: #25D366; color: #fff; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .nav-wa:hover { background: #1eb859; }
+
+  /* PAGES */
+  .page { display: none; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1a4a35 0%, #2D6A4F 60%, #3d8a64 100%); color: #fff; padding: 60px 24px 50px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: '🌿'; position: absolute; font-size: 200px; opacity: 0.06; top: -30px; left: -20px; }
+  .hero::after { content: '🌿'; position: absolute; font-size: 200px; opacity: 0.06; bottom: -40px; right: -20px; transform: scaleX(-1); }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 3px; color: var(--ma-gold); text-transform: uppercase; margin-bottom: 12px; }
+  .hero-title { font-family: var(--font); font-size: 38px; font-weight: bold; line-height: 1.2; margin-bottom: 16px; }
+  .hero-title span { color: var(--ma-gold); }
+  .hero-sub { font-size: 15px; color: rgba(255,255,255,0.8); max-width: 520px; margin: 0 auto 28px; line-height: 1.6; }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--ma-gold); color: #fff; border: none; padding: 12px 28px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+  .btn-primary:hover { transform: scale(1.04); }
+  .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.5); padding: 12px 28px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: border-color 0.2s; }
+  .btn-outline:hover { border-color: #fff; }
+  .hero-stats { display: flex; gap: 32px; justify-content: center; margin-top: 36px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.2); flex-wrap: wrap; }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-size: 28px; font-weight: bold; font-family: var(--font); color: var(--ma-gold); }
+  .hero-stat-label { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+
+  /* MARQUEE */
+  .marquee-bar { background: var(--ma-gold); padding: 8px 0; overflow: hidden; }
+  .marquee-inner { display: flex; gap: 40px; animation: scroll 18s linear infinite; white-space: nowrap; }
+  .marquee-inner span { font-size: 12px; color: #fff; font-weight: bold; letter-spacing: 1px; }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* SECTION */
+  .section { padding: 48px 24px; }
+  .section-alt { background: var(--ma-green-light); }
+  .section-title { font-family: var(--font); font-size: 26px; color: var(--ma-green); margin-bottom: 6px; }
+  .section-sub { font-size: 14px; color: var(--ma-muted); margin-bottom: 28px; }
+  .section-eyebrow { font-size: 11px; letter-spacing: 2px; color: var(--ma-gold); text-transform: uppercase; margin-bottom: 8px; }
+
+  /* SERVICES GRID */
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+  .service-card { background: #fff; border: 0.5px solid var(--ma-border); border-radius: var(--radius); padding: 20px 16px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; text-align: center; }
+  .service-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(45,106,79,0.12); }
+  .service-icon { font-size: 28px; margin-bottom: 10px; }
+  .service-name { font-size: 13px; font-weight: bold; color: var(--ma-green); margin-bottom: 4px; }
+  .service-desc { font-size: 11px; color: var(--ma-muted); line-height: 1.4; }
+
+  /* DISEASE CARDS */
+  .disease-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .disease-card { background: #fff; border: 0.5px solid var(--ma-border); border-radius: var(--radius); padding: 18px; cursor: pointer; transition: all 0.2s; }
+  .disease-card:hover { border-color: var(--ma-green); box-shadow: 0 4px 16px rgba(45,106,79,0.1); }
+  .disease-badge { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 12px; margin-bottom: 10px; font-weight: bold; }
+  .badge-joint { background: #E1F5EE; color: #0F6E56; }
+  .badge-skin { background: #FAEEDA; color: #854F0B; }
+  .badge-digest { background: #FAECE7; color: #993C1D; }
+  .badge-mental { background: #EEEDFE; color: #534AB7; }
+  .badge-lifestyle { background: #EAF3DE; color: #3B6D11; }
+  .disease-name { font-size: 14px; font-weight: bold; color: var(--ma-text); margin-bottom: 6px; }
+  .disease-tagline { font-size: 12px; color: var(--ma-muted); line-height: 1.4; margin-bottom: 12px; }
+  .disease-link { font-size: 12px; color: var(--ma-green); font-weight: bold; cursor: pointer; }
+
+  /* DOCTORS */
+  .doctors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+  .doctor-card { background: #fff; border: 0.5px solid var(--ma-border); border-radius: var(--radius); overflow: hidden; transition: transform 0.2s; cursor: pointer; }
+  .doctor-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(45,106,79,0.12); }
+  .doctor-photo { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 64px; }
+  .doctor-info { padding: 16px; }
+  .doctor-name { font-size: 15px; font-weight: bold; color: var(--ma-green); margin-bottom: 2px; font-family: var(--font); }
+  .doctor-degree { font-size: 11px; color: var(--ma-gold); font-weight: bold; margin-bottom: 4px; }
+  .doctor-spec { font-size: 12px; color: var(--ma-muted); margin-bottom: 10px; }
+  .doctor-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+  .doctor-tag { font-size: 10px; background: var(--ma-green-light); color: var(--ma-green); padding: 2px 8px; border-radius: 10px; }
+  .doctor-exp { font-size: 11px; color: var(--ma-muted); }
+  .doctor-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .btn-book { flex: 1; background: var(--ma-green); color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+  .btn-wa { background: #25D366; color: #fff; border: none; padding: 8px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .testimonial { background: #fff; border: 0.5px solid var(--ma-border); border-radius: var(--radius); padding: 18px; }
+  .testimonial-stars { color: var(--ma-gold); font-size: 14px; margin-bottom: 8px; }
+  .testimonial-text { font-size: 13px; color: var(--ma-muted); line-height: 1.6; font-style: italic; margin-bottom: 12px; }
+  .testimonial-author { font-size: 12px; font-weight: bold; color: var(--ma-green); }
+  .testimonial-disease { font-size: 11px; color: var(--ma-muted); }
+
+  /* BOOKING FORM */
+  .booking-form { background: #fff; border: 0.5px solid var(--ma-border); border-radius: var(--radius); padding: 28px; max-width: 560px; margin: 0 auto; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .form-label { font-size: 12px; font-weight: bold; color: var(--ma-green); }
+  .form-input { border: 0.5px solid var(--ma-border); border-radius: 8px; padding: 10px 12px; font-size: 13px; outline: none; font-family: var(--font-sans); }
+  .form-input:focus { border-color: var(--ma-green); }
+  .form-select { border: 0.5px solid var(--ma-border); border-radius: 8px; padding: 10px 12px; font-size: 13px; background: #fff; outline: none; }
+  .form-submit { width: 100%; background: var(--ma-green); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+  .form-submit:hover { background: var(--ma-green-mid); }
+  .form-wa { width: 100%; background: #25D366; color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+  /* DISEASE DETAIL PAGE */
+  .disease-hero { background: var(--ma-green); color: #fff; padding: 32px 24px; }
+  .disease-hero h1 { font-family: var(--font); font-size: 28px; margin-bottom: 8px; }
+  .disease-hero p { font-size: 14px; color: rgba(255,255,255,0.8); max-width: 500px; line-height: 1.6; }
+  .disease-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; padding: 28px 24px; }
+  .disease-main { }
+  .disease-sidebar { }
+  .info-block { background: #fff; border: 0.5px solid var(--ma-border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .info-block h3 { font-size: 15px; font-weight: bold; color: var(--ma-green); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--ma-border); }
+  .info-block ul { list-style: none; }
+  .info-block ul li { font-size: 13px; color: var(--ma-muted); padding: 4px 0; padding-left: 16px; position: relative; line-height: 1.5; }
+  .info-block ul li::before { content: '•'; color: var(--ma-green); position: absolute; left: 0; font-weight: bold; }
+  .treatment-step { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--ma-border); }
+  .treatment-step:last-child { border-bottom: none; }
+  .step-num { width: 28px; height: 28px; background: var(--ma-green); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
+  .step-content h4 { font-size: 13px; font-weight: bold; color: var(--ma-text); margin-bottom: 3px; }
+  .step-content p { font-size: 12px; color: var(--ma-muted); line-height: 1.4; }
+  .herb-pill { display: inline-block; background: var(--ma-green-light); color: var(--ma-green); font-size: 11px; padding: 4px 10px; border-radius: 14px; margin: 3px; font-weight: bold; }
+  .sidebar-cta { background: var(--ma-green); color: #fff; border-radius: var(--radius); padding: 20px; margin-bottom: 14px; text-align: center; }
+  .sidebar-cta h4 { font-size: 14px; margin-bottom: 8px; }
+  .sidebar-cta p { font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 14px; line-height: 1.4; }
+  .cta-btn { background: var(--ma-gold); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 8px; }
+  .cta-wa { background: #25D366; color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; width: 100%; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .about-text h2 { font-family: var(--font); font-size: 24px; color: var(--ma-green); margin-bottom: 12px; }
+  .about-text p { font-size: 13px; color: var(--ma-muted); line-height: 1.7; margin-bottom: 12px; }
+  .about-values { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .value-item { background: var(--ma-green-light); border-radius: 8px; padding: 14px; }
+  .value-icon { font-size: 20px; margin-bottom: 6px; }
+  .value-title { font-size: 12px; font-weight: bold; color: var(--ma-green); }
+  .value-desc { font-size: 11px; color: var(--ma-muted); margin-top: 3px; line-height: 1.4; }
+  .about-visual { background: var(--ma-green); border-radius: var(--radius); padding: 28px; color: #fff; }
+  .about-visual h3 { font-family: var(--font); font-size: 20px; margin-bottom: 16px; }
+  .timeline-item { display: flex; gap: 12px; margin-bottom: 14px; }
+  .tl-dot { width: 10px; height: 10px; background: var(--ma-gold); border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .tl-content { font-size: 12px; color: rgba(255,255,255,0.8); }
+  .tl-year { font-weight: bold; color: var(--ma-gold); }
+
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .contact-info { }
+  .contact-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 0.5px solid var(--ma-border); }
+  .contact-icon { width: 36px; height: 36px; background: var(--ma-green-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .contact-label { font-size: 11px; color: var(--ma-muted); }
+  .contact-value { font-size: 13px; font-weight: bold; color: var(--ma-text); margin-top: 2px; }
+  .map-placeholder { background: var(--ma-green-light); border-radius: var(--radius); height: 200px; display: flex; align-items: center; justify-content: center; margin-top: 16px; border: 0.5px solid var(--ma-border); }
+
+  /* WHATSAPP FLOAT */
+  .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: #fff; border: none; border-radius: 50%; width: 52px; height: 52px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(37,211,102,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+  .wa-float:hover { transform: scale(1.1); }
+  .wa-tooltip { position: fixed; bottom: 82px; right: 20px; background: #fff; border: 0.5px solid var(--ma-border); border-radius: 10px; padding: 12px 14px; font-size: 12px; width: 200px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); z-index: 200; display: none; }
+  .wa-tooltip.show { display: block; }
+  .wa-tooltip h4 { font-size: 13px; font-weight: bold; color: var(--ma-green); margin-bottom: 4px; }
+  .wa-tooltip p { color: var(--ma-muted); line-height: 1.4; }
+  .wa-tooltip-btn { background: #25D366; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
+
+  /* FOOTER */
+  .footer { background: #1a3d2b; color: rgba(255,255,255,0.75); padding: 36px 24px 16px; }
+  .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; margin-bottom: 28px; }
+  .footer-col h4 { color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 12px; font-family: var(--font); }
+  .footer-col a { display: block; font-size: 12px; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 6px; cursor: pointer; }
+  .footer-col a:hover { color: var(--ma-gold); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .footer-bottom-text { font-size: 11px; }
+  .footer-social { display: flex; gap: 10px; }
+  .social-btn { width: 28px; height: 28px; background: rgba(255,255,255,0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+
+  /* BREADCRUMB */
+  .breadcrumb { padding: 10px 24px; font-size: 12px; color: var(--ma-muted); background: #fff; border-bottom: 0.5px solid var(--ma-border); }
+  .breadcrumb span { cursor: pointer; color: var(--ma-green); }
+  .breadcrumb span:hover { text-decoration: underline; }
+
+  /* MOBILE TWEAKS */
+  @media (max-width: 540px) {
+    .hero-title { font-size: 26px; }
+    .disease-content, .about-grid, .contact-grid, .form-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+
+<div id="app">
+
+  <nav class="nav">
+    <div class="nav-logo" onclick="showPage('home')">
+      <div class="nav-logo-icon">🌿</div>
+      <div>
+        <div class="nav-logo-text">Mythili</div>
+        <div class="nav-logo-sub">AYURVEDA</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link" onclick="showPage('home')">Home</div>
+      <div class="nav-link" onclick="showPage('about')">About</div>
+      <div class="nav-link" onclick="showPage('doctors')">Doctors</div>
+      <div class="nav-link" onclick="showPage('diseases')">Conditions</div>
+      <div class="nav-link" onclick="showPage('services')">Services</div>
+      <div class="nav-link" onclick="showPage('blog')">Blog</div>
+      <div class="nav-link" onclick="showPage('contact')">Contact</div>
+    </div>
+    <div class="nav-wa" onclick="openWA('general')">
+      <span>💬</span> WhatsApp
+    </div>
+  </nav>
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <div class="hero-eyebrow">5000 Years of Ancient Wisdom</div>
+      <h1 class="hero-title">Heal Naturally with<br><span>Authentic Ayurveda</span></h1>
+      <p class="hero-sub">Experience holistic healing through personalised Ayurvedic treatments, rare herbal formulations, and compassionate care from certified Vaidyas.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('booking')">Book a Consultation</button>
+        <button class="btn-outline" onclick="showPage('diseases')">Explore Conditions</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">15,000+</div><div class="hero-stat-label">Patients healed</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">25+</div><div class="hero-stat-label">Years of practice</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">Expert Vaidyas</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">200+</div><div class="hero-stat-label">Herbal formulas</div></div>
+      </div>
+    </div>
+
+    <div class="marquee-bar">
+      <div class="marquee-inner">
+        <span>✦ PANCHAKARMA</span><span>✦ ARTHRITIS CARE</span><span>✦ PSORIASIS TREATMENT</span><span>✦ DIABETES MANAGEMENT</span><span>✦ WEIGHT LOSS</span><span>✦ SPINE CARE</span><span>✦ STRESS & ANXIETY</span><span>✦ WOMEN'S HEALTH</span>
+        <span>✦ PANCHAKARMA</span><span>✦ ARTHRITIS CARE</span><span>✦ PSORIASIS TREATMENT</span><span>✦ DIABETES MANAGEMENT</span><span>✦ WEIGHT LOSS</span><span>✦ SPINE CARE</span><span>✦ STRESS & ANXIETY</span><span>✦ WOMEN'S HEALTH</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">What we treat</div>
+      <div class="section-title">Common Conditions We Heal</div>
+      <div class="section-sub">Rooted in classical Ayurvedic texts, our treatments address the root cause — not just symptoms.</div>
+      <div class="disease-grid">
+        <div class="disease-card" onclick="showDisease('arthritis')">
+          <span class="disease-badge badge-joint">Joint & Bone</span>
+          <div class="disease-name">Arthritis & Joint Pain</div>
+          <div class="disease-tagline">Reduce inflammation and restore mobility naturally through Panchakarma and herbal oils.</div>
+          <div class="disease-link">Read more →</div>
+        </div>
+        <div class="disease-card" onclick="showDisease('psoriasis')">
+          <span class="disease-badge badge-skin">Skin</span>
+          <div class="disease-name">Psoriasis & Skin Disorders</div>
+          <div class="disease-tagline">Detoxify and rejuvenate skin through Virechana and personalised herbal therapy.</div>
+          <div class="disease-link">Read more →</div>
+        </div>
+        <div class="disease-card" onclick="showDisease('ibs')">
+          <span class="disease-badge badge-digest">Digestive</span>
+          <div class="disease-name">IBS & Gut Health</div>
+          <div class="disease-tagline">Restore digestive fire (Agni) and eliminate toxins with targeted gut treatments.</div>
+          <div class="disease-link">Read more →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-mental">Mental Health</span>
+          <div class="disease-name">Stress & Anxiety</div>
+          <div class="disease-tagline">Balance Vata dosha and calm the nervous system through Shirodhara and Nasya.</div>
+          <div class="disease-link">Read more →</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section section-alt">
+      <div class="section-eyebrow">Our Vaidyas</div>
+      <div class="section-title">Meet Our Doctors</div>
+      <div class="section-sub">Each doctor brings decades of clinical experience rooted in classical Ayurvedic training.</div>
+      <div class="doctors-grid">
+        <div class="doctor-card" onclick="showPage('doctors')">
+          <div class="doctor-photo" style="background:#EAF4EE;">👩‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Mythili Sharma</div>
+            <div class="doctor-degree">BAMS, MD (Kayachikitsa)</div>
+            <div class="doctor-spec">Founder & Chief Vaidya</div>
+            <div class="doctor-tags"><span class="doctor-tag">Panchakarma</span><span class="doctor-tag">Joint Care</span></div>
+            <div class="doctor-exp">22 years experience</div>
+            <div class="doctor-btns">
+              <button class="btn-book" onclick="showPage('booking')">Book</button>
+              <button class="btn-wa" onclick="openWA('doctor')">💬</button>
+            </div>
+          </div>
+        </div>
+        <div class="doctor-card" onclick="showPage('doctors')">
+          <div class="doctor-photo" style="background:#FDF6EC;">👨‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Arjun Nair</div>
+            <div class="doctor-degree">BAMS, MD (Panchakarma)</div>
+            <div class="doctor-spec">Senior Vaidya — Detox Specialist</div>
+            <div class="doctor-tags"><span class="doctor-tag">Virechana</span><span class="doctor-tag">Vasti</span></div>
+            <div class="doctor-exp">18 years experience</div>
+            <div class="doctor-btns">
+              <button class="btn-book" onclick="showPage('booking')">Book</button>
+              <button class="btn-wa" onclick="openWA('doctor')">💬</button>
+            </div>
+          </div>
+        </div>
+        <div class="doctor-card" onclick="showPage('doctors')">
+          <div class="doctor-photo" style="background:#EEEDFE;">👩‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Priya Menon</div>
+            <div class="doctor-degree">BAMS, PG Dip (Streeroga)</div>
+            <div class="doctor-spec">Women's Health & Fertility</div>
+            <div class="doctor-tags"><span class="doctor-tag">PCOS</span><span class="doctor-tag">Fertility</span></div>
+            <div class="doctor-exp">14 years experience</div>
+            <div class="doctor-btns">
+              <button class="btn-book" onclick="showPage('booking')">Book</button>
+              <button class="btn-wa" onclick="openWA('doctor')">💬</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Patient Stories</div>
+      <div class="section-title">What Our Patients Say</div>
+      <div class="section-sub">Real healings, real people.</div>
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <div class="testimonial-text">"After 5 years of chronic arthritis, Dr. Mythili's Panchakarma course gave me back my mobility. I can climb stairs again without pain!"</div>
+          <div class="testimonial-author">Ramesh K., Chennai</div>
+          <div class="testimonial-disease">Arthritis · 3-month treatment</div>
+        </div>
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <div class="testimonial-text">"My psoriasis plaques reduced by 80% in 6 weeks. The herbal formulations are unlike anything I've tried before. Truly remarkable."</div>
+          <div class="testimonial-author">Sunita P., Bangalore</div>
+          <div class="testimonial-disease">Psoriasis · 6-week Virechana</div>
+        </div>
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <div class="testimonial-text">"Dr. Priya helped me conceive naturally after 3 years of trying. Her holistic approach to PCOS management changed my life."</div>
+          <div class="testimonial-author">Deepa R., Hyderabad</div>
+          <div class="testimonial-disease">PCOS & Fertility</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section section-alt" style="text-align:center; padding: 40px 24px;">
+      <div class="section-eyebrow">Start Your Healing Journey</div>
+      <div class="section-title">Ready to Consult a Vaidya?</div>
+      <p style="font-size:14px;color:var(--ma-muted);margin:8px 0 24px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6;">Book an in-clinic consultation or speak to us instantly on WhatsApp. Your first consultation includes a complete Prakriti assessment.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="showPage('booking')">Book Appointment</button>
+        <button style="background:#25D366;color:#fff;border:none;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:bold;cursor:pointer;" onclick="openWA('general')">💬 Chat on WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT PAGE -->
+  <div id="page-about" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › About Us</div>
+    <div class="section">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-eyebrow">Our Story</div>
+          <h2>25 Years of Healing Through Ancient Wisdom</h2>
+          <p>Mythili Ayurveda was founded in 1999 by Dr. Mythili Sharma with one mission: to bring authentic, classical Ayurvedic treatment to patients who had lost hope in modern medicine.</p>
+          <p>We believe that true healing is holistic — it addresses the body, mind, and spirit together. Every treatment at our clinic begins with a thorough Prakriti assessment to understand your unique constitution before prescribing any remedy.</p>
+          <p>Today, our team of 8 expert Vaidyas has served over 15,000 patients across India and internationally, with a patient satisfaction rate of 96%.</p>
+          <div class="about-values">
+            <div class="value-item"><div class="value-icon">🌿</div><div class="value-title">Classical Approach</div><div class="value-desc">Treatments grounded in Charaka Samhita and Sushruta Samhita</div></div>
+            <div class="value-item"><div class="value-icon">🧪</div><div class="value-title">Pure Formulations</div><div class="value-desc">In-house preparation of Arishtas, Churnas and Taila</div></div>
+            <div class="value-item"><div class="value-icon">💚</div><div class="value-title">No Side Effects</div><div class="value-desc">100% natural ingredients, carefully sourced and tested</div></div>
+            <div class="value-item"><div class="value-icon">🧘</div><div class="value-title">Holistic Healing</div><div class="value-desc">Yoga, diet, lifestyle guidance alongside treatment</div></div>
+          </div>
+        </div>
+        <div class="about-visual">
+          <h3>Our Journey</h3>
+          <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span class="tl-year">1999</span> — Founded in Chennai by Dr. Mythili Sharma after completing MD in Kayachikitsa from RGUHS</div></div>
+          <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span class="tl-year">2005</span> — Launched dedicated Panchakarma centre with 10 treatment rooms</div></div>
+          <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span class="tl-year">2010</span> — Opened in-house herbal pharmacy with 200+ proprietary formulations</div></div>
+          <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span class="tl-year">2016</span> — Recognised by Ministry of AYUSH as a Centre of Excellence</div></div>
+          <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span class="tl-year">2020</span> — Launched online consultations reaching patients across 15 countries</div></div>
+          <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span class="tl-year">2024</span> — 15,000+ healed patients and counting</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCTORS PAGE -->
+  <div id="page-doctors" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › Our Doctors</div>
+    <div class="section">
+      <div class="section-eyebrow">Our Vaidyas</div>
+      <div class="section-title">Expert Ayurvedic Doctors</div>
+      <div class="section-sub">All our doctors hold BAMS degrees from recognised universities with post-graduate specialisations in classical Ayurvedic branches.</div>
+      <div class="doctors-grid">
+        <div class="doctor-card">
+          <div class="doctor-photo" style="background:#EAF4EE;">👩‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Mythili Sharma</div>
+            <div class="doctor-degree">BAMS, MD (Kayachikitsa), PhD</div>
+            <div class="doctor-spec">Founder & Chief Vaidya • General Ayurveda</div>
+            <div class="doctor-tags"><span class="doctor-tag">Panchakarma</span><span class="doctor-tag">Arthritis</span><span class="doctor-tag">Diabetes</span></div>
+            <div class="doctor-exp">22 years clinical experience</div>
+            <div class="doctor-btns"><button class="btn-book" onclick="showPage('booking')">Book Appointment</button><button class="btn-wa" onclick="openWA('doctor')">💬</button></div>
+          </div>
+        </div>
+        <div class="doctor-card">
+          <div class="doctor-photo" style="background:#FDF6EC;">👨‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Arjun Nair</div>
+            <div class="doctor-degree">BAMS, MD (Panchakarma)</div>
+            <div class="doctor-spec">Senior Vaidya • Detox & Rejuvenation</div>
+            <div class="doctor-tags"><span class="doctor-tag">Virechana</span><span class="doctor-tag">Vasti</span><span class="doctor-tag">Snehapana</span></div>
+            <div class="doctor-exp">18 years clinical experience</div>
+            <div class="doctor-btns"><button class="btn-book" onclick="showPage('booking')">Book Appointment</button><button class="btn-wa" onclick="openWA('doctor')">💬</button></div>
+          </div>
+        </div>
+        <div class="doctor-card">
+          <div class="doctor-photo" style="background:#EEEDFE;">👩‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Priya Menon</div>
+            <div class="doctor-degree">BAMS, PG Dip (Streeroga & Prasuti)</div>
+            <div class="doctor-spec">Women's Health, PCOS & Fertility</div>
+            <div class="doctor-tags"><span class="doctor-tag">PCOS</span><span class="doctor-tag">Fertility</span><span class="doctor-tag">Menopause</span></div>
+            <div class="doctor-exp">14 years clinical experience</div>
+            <div class="doctor-btns"><button class="btn-book" onclick="showPage('booking')">Book Appointment</button><button class="btn-wa" onclick="openWA('doctor')">💬</button></div>
+          </div>
+        </div>
+        <div class="doctor-card">
+          <div class="doctor-photo" style="background:#E1F5EE;">👨‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Venkat Rao</div>
+            <div class="doctor-degree">BAMS, MD (Shalya Tantra)</div>
+            <div class="doctor-spec">Musculoskeletal & Spine Disorders</div>
+            <div class="doctor-tags"><span class="doctor-tag">Spondylitis</span><span class="doctor-tag">Sciatica</span><span class="doctor-tag">Sports</span></div>
+            <div class="doctor-exp">16 years clinical experience</div>
+            <div class="doctor-btns"><button class="btn-book" onclick="showPage('booking')">Book Appointment</button><button class="btn-wa" onclick="openWA('doctor')">💬</button></div>
+          </div>
+        </div>
+        <div class="doctor-card">
+          <div class="doctor-photo" style="background:#FAEEDA;">👩‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Kavitha Iyer</div>
+            <div class="doctor-degree">BAMS, MD (Kaumarabhritya)</div>
+            <div class="doctor-spec">Paediatric Ayurveda & Child Health</div>
+            <div class="doctor-tags"><span class="doctor-tag">Child Care</span><span class="doctor-tag">Autism</span><span class="doctor-tag">Growth</span></div>
+            <div class="doctor-exp">12 years clinical experience</div>
+            <div class="doctor-btns"><button class="btn-book" onclick="showPage('booking')">Book Appointment</button><button class="btn-wa" onclick="openWA('doctor')">💬</button></div>
+          </div>
+        </div>
+        <div class="doctor-card">
+          <div class="doctor-photo" style="background:#FAECE7;">👨‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Suresh Pillai</div>
+            <div class="doctor-degree">BAMS, PG Dip (Manovigyana)</div>
+            <div class="doctor-spec">Mental Health, Stress & Neurological</div>
+            <div class="doctor-tags"><span class="doctor-tag">Anxiety</span><span class="doctor-tag">Insomnia</span><span class="doctor-tag">Depression</span></div>
+            <div class="doctor-exp">10 years clinical experience</div>
+            <div class="doctor-btns"><button class="btn-book" onclick="showPage('booking')">Book Appointment</button><button class="btn-wa" onclick="openWA('doctor')">💬</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISEASES PAGE -->
+  <div id="page-diseases" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › Conditions We Treat</div>
+    <div class="section">
+      <div class="section-eyebrow">Conditions We Treat</div>
+      <div class="section-title">Find Your Condition</div>
+      <div class="section-sub">Click any condition to learn about causes, Ayurvedic perspective, treatment protocol, and our success rates.</div>
+      <div class="disease-grid">
+        <div class="disease-card" onclick="showDisease('arthritis')">
+          <span class="disease-badge badge-joint">Joint & Bone</span>
+          <div class="disease-name">Arthritis & Joint Pain</div>
+          <div class="disease-tagline">Amavata & Sandhivata — natural relief from inflammation and stiffness</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showDisease('psoriasis')">
+          <span class="disease-badge badge-skin">Skin</span>
+          <div class="disease-name">Psoriasis</div>
+          <div class="disease-tagline">Ekakushtha — detox and restore skin health from within</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showDisease('ibs')">
+          <span class="disease-badge badge-digest">Digestive</span>
+          <div class="disease-name">IBS & Digestive Disorders</div>
+          <div class="disease-tagline">Grahani Roga — heal the gut lining and restore Agni</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-mental">Mental Health</span>
+          <div class="disease-name">Stress & Anxiety</div>
+          <div class="disease-tagline">Chittodvega — calm the nervous system and balance Vata</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-lifestyle">Lifestyle</span>
+          <div class="disease-name">Type 2 Diabetes</div>
+          <div class="disease-tagline">Madhumeha — manage blood sugar naturally with herbal protocols</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-joint">Spine</span>
+          <div class="disease-name">Spondylitis & Back Pain</div>
+          <div class="disease-tagline">Gridhrasi & Katishoola — spinal rejuvenation through Kati Vasti</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-skin">Skin</span>
+          <div class="disease-name">Eczema & Dermatitis</div>
+          <div class="disease-tagline">Vicharchika — soothe inflamed skin with Lepa and internal cleanse</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-lifestyle">Women's Health</span>
+          <div class="disease-name">PCOS & Hormonal Balance</div>
+          <div class="disease-tagline">Aarthava Kshaya — regulate cycles and restore hormonal harmony</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+        <div class="disease-card" onclick="showPage('diseases')">
+          <span class="disease-badge badge-mental">Neurological</span>
+          <div class="disease-name">Migraine & Headaches</div>
+          <div class="disease-tagline">Ardhavabhedaka — Nasya and Shirodhara for lasting relief</div>
+          <div class="disease-link">View treatment →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISEASE DETAIL PAGE (Arthritis) -->
+  <div id="page-disease-arthritis" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › <span onclick="showPage('diseases')">Conditions</span> › Arthritis & Joint Pain</div>
+    <div class="disease-hero">
+      <span class="disease-badge badge-joint" style="background:rgba(255,255,255,0.2);color:#fff;">Joint & Bone</span>
+      <h1>Arthritis & Joint Pain</h1>
+      <p>Known as Amavata (Rheumatoid) and Sandhivata (Osteoarthritis) in classical Ayurvedic texts — a condition rooted in impaired Agni and accumulated Ama (toxins) in the joints.</p>
+    </div>
+    <div class="disease-content">
+      <div class="disease-main">
+        <div class="info-block">
+          <h3>Understanding Arthritis in Ayurveda</h3>
+          <p style="font-size:13px;color:var(--ma-muted);line-height:1.7;">In Ayurveda, arthritis is primarily a Vata disorder aggravated by accumulation of Ama (undigested metabolic waste). When Vata and Ama combine, they travel through channels (Srotas) and lodge in joints, causing inflammation, pain, and stiffness. Treatment must address both Ama elimination and Vata pacification simultaneously.</p>
+        </div>
+        <div class="info-block">
+          <h3>Symptoms we address</h3>
+          <ul>
+            <li>Morning stiffness lasting more than 30 minutes</li>
+            <li>Swelling, warmth, and redness in joints</li>
+            <li>Bilateral joint involvement (knuckles, knees, wrists)</li>
+            <li>Fatigue and generalised body pain</li>
+            <li>Loss of range of motion and grip strength</li>
+            <li>Low-grade fever in active inflammatory phases</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h3>Ayurvedic Treatment Protocol</h3>
+          <div class="treatment-step">
+            <div class="step-num">1</div>
+            <div class="step-content"><h4>Deepana-Pachana (2 weeks)</h4><p>Kindling digestive fire and digesting accumulated Ama using Trikatu, Chitrakadi Vati, and warm herbal decoctions</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">2</div>
+            <div class="step-content"><h4>Snehapana — Internal Oleation (5–7 days)</h4><p>Medicated ghee (Guggulutiktaka Ghrita) administered internally to lubricate and prepare the channels for Panchakarma</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">3</div>
+            <div class="step-content"><h4>Virechana — Therapeutic Purgation (1 day)</h4><p>Elimination of Pitta-based toxins through controlled therapeutic purgation, reducing systemic inflammation</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">4</div>
+            <div class="step-content"><h4>Vasti — Medicated Enema (8–30 days)</h4><p>Kshiravasti and Mustadi Yapana Vasti to directly address Vata in the colon — the root seat of Vata disorders</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">5</div>
+            <div class="step-content"><h4>Herbal Maintenance (3–6 months)</h4><p>Rasayana therapy with Ashwagandha, Guggul, Shallaki, and Boswellia for long-term joint rebuilding</p></div>
+          </div>
+        </div>
+        <div class="info-block">
+          <h3>Key herbs used</h3>
+          <div>
+            <span class="herb-pill">Ashwagandha</span><span class="herb-pill">Shallaki</span><span class="herb-pill">Guggul</span><span class="herb-pill">Nirgundi</span><span class="herb-pill">Eranda</span><span class="herb-pill">Punarnava</span><span class="herb-pill">Rasna</span><span class="herb-pill">Dhanvantaram Taila</span>
+          </div>
+        </div>
+      </div>
+      <div class="disease-sidebar">
+        <div class="sidebar-cta">
+          <h4>Start your healing today</h4>
+          <p>Book a consultation with Dr. Mythili Sharma for a personalised Arthritis treatment plan.</p>
+          <button class="cta-btn" onclick="showPage('booking')">Book Consultation</button>
+          <button class="cta-wa" onclick="openWA('arthritis')">💬 Ask on WhatsApp</button>
+        </div>
+        <div class="info-block">
+          <h3>Our success rates</h3>
+          <div style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Pain reduction</span><span style="font-weight:bold;color:var(--ma-green)">87%</span></div>
+            <div style="background:#eee;border-radius:4px;height:6px;"><div style="background:var(--ma-green);width:87%;height:6px;border-radius:4px;"></div></div>
+          </div>
+          <div style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Mobility improvement</span><span style="font-weight:bold;color:var(--ma-green)">82%</span></div>
+            <div style="background:#eee;border-radius:4px;height:6px;"><div style="background:var(--ma-green);width:82%;height:6px;border-radius:4px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Drug reduction</span><span style="font-weight:bold;color:var(--ma-green)">74%</span></div>
+            <div style="background:#eee;border-radius:4px;height:6px;"><div style="background:var(--ma-green);width:74%;height:6px;border-radius:4px;"></div></div>
+          </div>
+        </div>
+        <div class="info-block">
+          <h3>Treatment duration</h3>
+          <ul>
+            <li>Initial assessment: 60 minutes</li>
+            <li>Panchakarma course: 21–28 days</li>
+            <li>Herbal protocol: 3–6 months</li>
+            <li>Follow-up: Monthly for 6 months</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISEASE DETAIL (Psoriasis) -->
+  <div id="page-disease-psoriasis" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › <span onclick="showPage('diseases')">Conditions</span> › Psoriasis</div>
+    <div class="disease-hero">
+      <span class="disease-badge badge-skin" style="background:rgba(255,255,255,0.2);color:#fff;">Skin Disorder</span>
+      <h1>Psoriasis & Skin Disorders</h1>
+      <p>Classified as Ekakushtha in Ayurveda — a chronic Kushtha (skin disease) involving vitiation of all three doshas, with Vata and Kapha predominance. Completely treatable with sustained Panchakarma and Rasayana.</p>
+    </div>
+    <div class="disease-content">
+      <div class="disease-main">
+        <div class="info-block">
+          <h3>Ayurvedic perspective</h3>
+          <p style="font-size:13px;color:var(--ma-muted);line-height:1.7;">Ayurveda views psoriasis as a deep-seated Ama accumulation in Rasa and Rakta Dhatu (plasma and blood tissue). The abnormal skin cell turnover is a manifestation of impaired liver function, disturbed immunity, and blocked Srotas. Treatment must be systemic, not topical.</p>
+        </div>
+        <div class="info-block">
+          <h3>Treatment protocol</h3>
+          <div class="treatment-step">
+            <div class="step-num">1</div>
+            <div class="step-content"><h4>Snehana — Oleation</h4><p>External and internal oleation with Mahatiktaka Ghrita to mobilise toxins from deep tissues</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">2</div>
+            <div class="step-content"><h4>Virechana — Purgation</h4><p>Deep cleansing of Rakta Dhatu through therapeutic purgation, addressing the root of skin inflammation</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">3</div>
+            <div class="step-content"><h4>Takradhara — Medicated Buttermilk Therapy</h4><p>Daily pouring of medicated buttermilk infused with Amalaki and Nimba over the scalp and body — a speciality treatment for psoriasis</p></div>
+          </div>
+          <div class="treatment-step">
+            <div class="step-num">4</div>
+            <div class="step-content"><h4>Rasayana — Blood Purification</h4><p>Manjistha, Neem, Khadira, and Sariva-based formulations for sustained blood purification over 3–6 months</p></div>
+          </div>
+        </div>
+        <div class="info-block">
+          <h3>Key herbs used</h3>
+          <div><span class="herb-pill">Neem</span><span class="herb-pill">Manjistha</span><span class="herb-pill">Khadira</span><span class="herb-pill">Sariva</span><span class="herb-pill">Amalaki</span><span class="herb-pill">Turmeric</span><span class="herb-pill">Chakramarda</span><span class="herb-pill">Mahatiktaka Ghrita</span></div>
+        </div>
+      </div>
+      <div class="disease-sidebar">
+        <div class="sidebar-cta">
+          <h4>Consult Dr. Arjun Nair</h4>
+          <p>Specialist in skin disorders and Virechana therapy. Over 3,000 psoriasis cases treated.</p>
+          <button class="cta-btn" onclick="showPage('booking')">Book Consultation</button>
+          <button class="cta-wa" onclick="openWA('psoriasis')">💬 Ask on WhatsApp</button>
+        </div>
+        <div class="info-block">
+          <h3>Results our patients see</h3>
+          <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Plaque reduction</span><span style="font-weight:bold;color:var(--ma-green)">85%</span></div><div style="background:#eee;border-radius:4px;height:6px;"><div style="background:var(--ma-green);width:85%;height:6px;border-radius:4px;"></div></div></div>
+          <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Itch relief</span><span style="font-weight:bold;color:var(--ma-green)">92%</span></div><div style="background:#eee;border-radius:4px;height:6px;"><div style="background:var(--ma-green);width:92%;height:6px;border-radius:4px;"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Recurrence prevention</span><span style="font-weight:bold;color:var(--ma-green)">78%</span></div><div style="background:#eee;border-radius:4px;height:6px;"><div style="background:var(--ma-green);width:78%;height:6px;border-radius:4px;"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IBS DISEASE PAGE -->
+  <div id="page-disease-ibs" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › <span onclick="showPage('diseases')">Conditions</span> › IBS & Gut Health</div>
+    <div class="disease-hero">
+      <span class="disease-badge badge-digest" style="background:rgba(255,255,255,0.2);color:#fff;">Digestive</span>
+      <h1>IBS & Digestive Disorders</h1>
+      <p>Grahani Roga in Ayurveda — a condition of weakened digestive fire (Mandagni) causing malabsorption, irregular bowel habits, and systemic toxin accumulation. Healed through Agni restoration and gut healing protocols.</p>
+    </div>
+    <div class="disease-content">
+      <div class="disease-main">
+        <div class="info-block">
+          <h3>Treatment protocol</h3>
+          <div class="treatment-step"><div class="step-num">1</div><div class="step-content"><h4>Deepana-Pachana</h4><p>Digestive kindling with Trikatu, Hingvastaka Churna, and warm herbal teas</p></div></div>
+          <div class="treatment-step"><div class="step-num">2</div><div class="step-content"><h4>Vasti Therapy</h4><p>Medicated enemas to heal the colonic mucosa and restore Samana Vata balance</p></div></div>
+          <div class="treatment-step"><div class="step-num">3</div><div class="step-content"><h4>Takra (Medicated Buttermilk) Protocol</h4><p>Daily therapeutic buttermilk with Musta, Bilva, and Chitrak for mucosal healing</p></div></div>
+          <div class="treatment-step"><div class="step-num">4</div><div class="step-content"><h4>Dietary Restructuring</h4><p>Personalised Pathya-Apathya (do's and don'ts) based on your specific Prakriti and Vikruti</p></div></div>
+        </div>
+        <div class="info-block">
+          <h3>Key herbs used</h3>
+          <div><span class="herb-pill">Bilva</span><span class="herb-pill">Musta</span><span class="herb-pill">Chitrak</span><span class="herb-pill">Kutaja</span><span class="herb-pill">Bael</span><span class="herb-pill">Dadimavaleha</span><span class="herb-pill">Hingvastaka</span></div>
+        </div>
+      </div>
+      <div class="disease-sidebar">
+        <div class="sidebar-cta">
+          <h4>Heal your gut naturally</h4>
+          <p>Book a gut health consultation and get a personalised dietary and treatment plan.</p>
+          <button class="cta-btn" onclick="showPage('booking')">Book Consultation</button>
+          <button class="cta-wa" onclick="openWA('ibs')">💬 Ask on WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES PAGE -->
+  <div id="page-services" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › Services</div>
+    <div class="section">
+      <div class="section-eyebrow">Our Treatments</div>
+      <div class="section-title">Ayurvedic Services We Offer</div>
+      <div class="section-sub">All treatments are preceded by a thorough Prakriti assessment and prescribed by qualified Vaidyas.</div>
+      <div class="services-grid">
+        <div class="service-card"><div class="service-icon">🫙</div><div class="service-name">Panchakarma</div><div class="service-desc">Complete 5-action detoxification — the cornerstone of Ayurvedic therapeutics</div></div>
+        <div class="service-card"><div class="service-icon">💆</div><div class="service-name">Shirodhara</div><div class="service-desc">Continuous oil stream on the forehead for stress, insomnia, and anxiety</div></div>
+        <div class="service-card"><div class="service-icon">🌿</div><div class="service-name">Abhyanga</div><div class="service-desc">Full-body warm medicated oil massage for detox and rejuvenation</div></div>
+        <div class="service-card"><div class="service-icon">🔥</div><div class="service-name">Swedana</div><div class="service-desc">Medicated steam therapy to open channels and eliminate toxins</div></div>
+        <div class="service-card"><div class="service-icon">💊</div><div class="service-name">Virechana</div><div class="service-desc">Therapeutic purgation for Pitta disorders and deep cleansing</div></div>
+        <div class="service-card"><div class="service-icon">🌊</div><div class="service-name">Vasti</div><div class="service-desc">Medicated enema — the most effective Vata treatment in Ayurveda</div></div>
+        <div class="service-card"><div class="service-icon">👃</div><div class="service-name">Nasya</div><div class="service-desc">Nasal administration of medicated oils for head and neck conditions</div></div>
+        <div class="service-card"><div class="service-icon">🦴</div><div class="service-name">Kati Vasti</div><div class="service-desc">Warm oil pooling therapy for lumbar spine and lower back pain</div></div>
+        <div class="service-card"><div class="service-icon">🧴</div><div class="service-name">Lepa & Upanaha</div><div class="service-desc">Herbal plasters and poultices for local joint and skin conditions</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG PAGE -->
+  <div id="page-blog" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › Health Blog</div>
+    <div class="section">
+      <div class="section-eyebrow">Ayurvedic Wisdom</div>
+      <div class="section-title">Health Articles & Insights</div>
+      <div class="section-sub">Written by our Vaidyas to help you live a balanced, disease-free life.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+        <div class="disease-card"><span class="disease-badge badge-lifestyle">Lifestyle</span><div class="disease-name">Understanding Your Prakriti (Body Type)</div><div class="disease-tagline">Discover whether you are Vata, Pitta, or Kapha dominant — and how to eat, sleep, and live accordingly.</div><div style="font-size:11px;color:var(--ma-muted);margin-top:8px;">Dr. Mythili Sharma · 5 min read</div></div>
+        <div class="disease-card"><span class="disease-badge badge-digest">Digestive</span><div class="disease-name">The 5 Signs Your Digestive Fire is Weak</div><div class="disease-tagline">Gas, bloating, coating on the tongue, fatigue after meals — Ayurveda explains why and what to do.</div><div style="font-size:11px;color:var(--ma-muted);margin-top:8px;">Dr. Arjun Nair · 4 min read</div></div>
+        <div class="disease-card"><span class="disease-badge badge-skin">Skin</span><div class="disease-name">Why Ayurveda Treats Psoriasis from the Inside</div><div class="disease-tagline">Topical creams suppress symptoms. Learn why blood purification through Virechana addresses the root cause.</div><div style="font-size:11px;color:var(--ma-muted);margin-top:8px;">Dr. Arjun Nair · 6 min read</div></div>
+        <div class="disease-card"><span class="disease-badge badge-mental">Wellness</span><div class="disease-name">Dinacharya: The Power of Daily Routine</div><div class="disease-tagline">Waking before sunrise, oil pulling, tongue scraping — ancient Ayurvedic morning rituals backed by modern research.</div><div style="font-size:11px;color:var(--ma-muted);margin-top:8px;">Dr. Mythili Sharma · 7 min read</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING PAGE -->
+  <div id="page-booking" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › Book Appointment</div>
+    <div class="section" style="max-width:600px;margin:0 auto;">
+      <div class="section-eyebrow">Schedule a Visit</div>
+      <div class="section-title">Book Your Consultation</div>
+      <div class="section-sub">All consultations include a complete Prakriti (body constitution) assessment and personalised treatment plan.</div>
+      <div class="booking-form">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" placeholder="Your first name" /></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" placeholder="Your last name" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" placeholder="+91 00000 00000" /></div>
+          <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" placeholder="your@email.com" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Select Doctor</label>
+          <select class="form-select">
+            <option>Dr. Mythili Sharma — General & Panchakarma</option>
+            <option>Dr. Arjun Nair — Detox & Skin</option>
+            <option>Dr. Priya Menon — Women's Health & PCOS</option>
+            <option>Dr. Venkat Rao — Spine & Joints</option>
+            <option>Dr. Kavitha Iyer — Paediatrics</option>
+            <option>Dr. Suresh Pillai — Mental Health</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Preferred Date</label><input class="form-input" type="date" /></div>
+          <div class="form-group"><label class="form-label">Preferred Time</label>
+            <select class="form-select">
+              <option>09:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+              <option>12:00 PM</option><option>02:00 PM</option><option>03:00 PM</option><option>04:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Main Health Concern</label>
+          <select class="form-select">
+            <option>Arthritis / Joint Pain</option><option>Psoriasis / Skin Issues</option>
+            <option>Digestive / IBS</option><option>Stress / Anxiety</option>
+            <option>Diabetes Management</option><option>Spine / Back Pain</option>
+            <option>PCOS / Women's Health</option><option>General Wellness / Prakriti Check</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Brief Description (optional)</label>
+          <textarea class="form-input" rows="3" placeholder="Describe your symptoms, duration, and any treatments you've tried..." style="resize:vertical;"></textarea>
+        </div>
+        <button class="form-submit" onclick="alert('Appointment request submitted! We will confirm within 2 hours.')">Confirm Appointment</button>
+        <button class="form-wa" onclick="openWA('booking')">💬 Or Book Instantly via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT PAGE -->
+  <div id="page-contact" class="page">
+    <div class="breadcrumb"><span onclick="showPage('home')">Home</span> › Contact Us</div>
+    <div class="section">
+      <div class="section-eyebrow">Get in Touch</div>
+      <div class="section-title">Visit or Reach Us</div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-label">Clinic Address</div><div class="contact-value">42, Velachery Main Road, Velachery, Chennai — 600 042, Tamil Nadu</div></div></div>
+          <div class="contact-item"><div class="contact-icon">📞</div><div><div class="contact-label">Phone</div><div class="contact-value">+91 99999 99999</div></div></div>
+          <div class="contact-item"><div class="contact-icon">💬</div><div><div class="contact-label">WhatsApp</div><div class="contact-value">+91 99999 99999</div></div></div>
+          <div class="contact-item"><div class="contact-icon">📧</div><div><div class="contact-label">Email</div><div class="contact-value">care@mythiliayurveda.com</div></div></div>
+          <div class="contact-item"><div class="contact-icon">🕐</div><div><div class="contact-label">Clinic Hours</div><div class="contact-value">Mon–Sat: 9:00 AM – 7:00 PM<br>Sunday: 9:00 AM – 1:00 PM</div></div></div>
+          <div style="margin-top:16px;"><button style="background:#25D366;color:#fff;border:none;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:bold;cursor:pointer;width:100%;" onclick="openWA('general')">💬 Chat on WhatsApp Now</button></div>
+        </div>
+        <div>
+          <div class="map-placeholder">
+            <div style="text-align:center;color:var(--ma-muted);">
+              <div style="font-size:36px;margin-bottom:8px;">🗺️</div>
+              <div style="font-size:13px;font-weight:bold;color:var(--ma-green);">Mythili Ayurveda Clinic</div>
+              <div style="font-size:12px;">Velachery, Chennai</div>
+              <button style="margin-top:12px;background:var(--ma-green);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;">Open in Google Maps</button>
+            </div>
+          </div>
+          <div class="booking-form" style="margin-top:16px;padding:20px;">
+            <div style="font-size:15px;font-weight:bold;color:var(--ma-green);margin-bottom:14px;">Send us a message</div>
+            <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" type="text" placeholder="Full name" /></div>
+            <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input class="form-input" type="tel" placeholder="+91 00000 00000" /></div>
+            <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" rows="3" placeholder="How can we help you?" style="resize:vertical;"></textarea></div>
+            <button class="form-submit" onclick="alert('Message sent! We\'ll reply within a few hours.')">Send Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHATSAPP FLOAT BUTTON -->
+  <button class="wa-float" onclick="toggleWATooltip()" title="Chat on WhatsApp" aria-label="Open WhatsApp chat">💬</button>
+  <div class="wa-tooltip" id="wa-tooltip">
+    <h4>🌿 Chat with us on WhatsApp</h4>
+    <p>Ask about treatments, book appointments, or get an instant Prakriti assessment.</p>
+    <button class="wa-tooltip-btn" onclick="openWA('general')">Start Chat →</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>🌿 Mythili Ayurveda</h4>
+        <p style="font-size:12px;line-height:1.6;color:rgba(255,255,255,0.55);">Authentic Ayurvedic healing rooted in 5,000 years of classical wisdom. AYUSH certified centre of excellence.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a onclick="showPage('about')">About Us</a>
+        <a onclick="showPage('doctors')">Our Doctors</a>
+        <a onclick="showPage('diseases')">Conditions</a>
+        <a onclick="showPage('services')">Services</a>
+        <a onclick="showPage('blog')">Health Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Conditions</h4>
+        <a onclick="showDisease('arthritis')">Arthritis</a>
+        <a onclick="showDisease('psoriasis')">Psoriasis</a>
+        <a onclick="showDisease('ibs')">IBS & Gut Health</a>
+        <a onclick="showPage('diseases')">PCOS</a>
+        <a onclick="showPage('diseases')">Diabetes</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a>+91 99999 99999</a>
+        <a>care@mythiliayurveda.com</a>
+        <a>Velachery, Chennai — 600042</a>
+        <a onclick="showPage('booking')">Book Appointment</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-text">© 2025 Mythili Ayurveda. All rights reserved. | AYUSH Reg. No. TN/AYU/2024/1042</div>
+      <div class="footer-social">
+        <div class="social-btn">f</div>
+        <div class="social-btn">in</div>
+        <div class="social-btn">▶</div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    var el = document.getElementById('page-' + id);
+    if (el) { el.classList.add('active'); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  }
+
+  function showDisease(name) {
+    showPage('disease-' + name);
+  }
+
+  function openWA(context) {
+    var msgs = {
+      general: 'Hello! I would like to know more about Mythili Ayurveda treatments.',
+      doctor: 'Hello! I would like to book a consultation with a doctor.',
+      booking: 'Hello! I would like to book an Ayurvedic consultation appointment.',
+      arthritis: 'Hello! I have arthritis/joint pain and would like to know about your Ayurvedic treatment.',
+      psoriasis: 'Hello! I suffer from psoriasis and would like to know about your treatment protocol.',
+      ibs: 'Hello! I have digestive issues (IBS) and would like to consult a Vaidya.'
+    };
+    var msg = encodeURIComponent(msgs[context] || msgs.general);
+    window.open('https://wa.me/919999999999?text=' + msg, '_blank');
+  }
+
+  function toggleWATooltip() {
+    var t = document.getElementById('wa-tooltip');
+    t.classList.toggle('show');
+  }
+
+  document.addEventListener('click', function(e) {
+    var tooltip = document.getElementById('wa-tooltip');
+    if (!e.target.closest('.wa-float') && !e.target.closest('.wa-tooltip')) {
+      tooltip.classList.remove('show');
+    }
+  });
+</script>
